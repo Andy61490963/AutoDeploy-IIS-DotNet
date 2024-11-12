@@ -3,7 +3,7 @@ param (
     [string]$publishFolder,
     [string]$projectPath,
     [string]$repositoryPath, 
-    [string]$branch = "main",
+    [string]$branch = "main", 
     [string]$configuration = "Release"
 )
 
@@ -32,8 +32,8 @@ Write-Host "pulling：$repositoryPath - $branch"
 Set-Location -Path $repositoryPath
 git pull origin $branch
 if (-not $?) {
-    Write-Error "Git pull Fall。"
-    Read-Host "press Enter To Continue..."
+    Write-Error "Git pull failed."
+    Read-Host "Press Enter to continue..."
     return
 }
 
@@ -44,19 +44,19 @@ Set-Location -Path $initialDirectory
 Import-Module WebAdministration
 
 try {
-	# 停止網站
-	Write-Host "Stopping website: $websiteName"
-	Stop-Website -Name $websiteName
+    # 停止網站
+    Write-Host "Stopping website: $websiteName"
+    Stop-Website -Name $websiteName
 
-	# 等待並檢查網站是否成功停止
-	Start-Sleep -Seconds 3
-	if ((Get-Website -Name $websiteName).State -ne "Stopped") {
-		Write-Error "Failed to stop the website."
-		Read-Host "Press Enter to continue despite the error..."
-	}
+    # 等待並檢查網站是否成功停止
+    Start-Sleep -Seconds 3
+    if ((Get-Website -Name $websiteName).State -ne "Stopped") {
+        Write-Error "Failed to stop the website."
+        Read-Host "Press Enter to continue despite the error..."
+    }
 
-	# 用於刪除發佈文件夾並設定最大重試時間的函數
-	function Reset-PublishFolder {
+    # 用於刪除發佈文件夾並設定最大重試時間的函數
+    function Reset-PublishFolder {
         param (
             [string]$path,
             [int]$maxRetryTimeInSeconds = 5
@@ -85,29 +85,29 @@ try {
         New-Item -ItemType Directory -Path $path | Out-Null
     }
 
-	# 執行重建發佈目錄並發佈應用程序
-	Reset-PublishFolder -path $publishFolder
-	Write-Host "Publishing the application..."
-	dotnet publish "$projectPath" -c $configuration -o "$publishFolder" > $null 2>&1
+    # 執行重建發佈目錄並發佈應用程序
+    Reset-PublishFolder -path $publishFolder
+    Write-Host "Publishing the application..."
+    dotnet publish "$projectPath" -c $configuration -o "$publishFolder" > $null 2>&1
 
-	# 檢查發佈是否成功
-	if (-not $?) {
-		Write-Error "Publish failed."
-		Read-Host "Press Enter to continue despite the error..."
-	}
+    # 檢查發佈是否成功
+    if (-not $?) {
+        Write-Error "Publish failed."
+        Read-Host "Press Enter to continue despite the error..."
+    }
 
-	# 啟動網站
-	Write-Host "Starting website: $websiteName"
-	Start-Website -Name $websiteName
+    # 啟動網站
+    Write-Host "Starting website: $websiteName"
+    Start-Website -Name $websiteName
 
-	# 等待並檢查網站是否成功啟動
-	Start-Sleep -Seconds 3
-	if ((Get-Website -Name $websiteName).State -ne "Started") {
-		Write-Error "Failed to start the website."
-		Read-Host "Press Enter to continue despite the error..."
-	}
+    # 等待並檢查網站是否成功啟動
+    Start-Sleep -Seconds 3
+    if ((Get-Website -Name $websiteName).State -ne "Started") {
+        Write-Error "Failed to start the website."
+        Read-Host "Press Enter to continue despite the error..."
+    }
 
-	Write-Host "Deployment completed successfully."
+    Write-Host "Deployment completed successfully."
 }
 catch {
     Write-Error "An unexpected error occurred: $_"
