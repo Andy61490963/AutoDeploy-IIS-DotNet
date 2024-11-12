@@ -27,7 +27,7 @@
 ### 2. 執行腳本： 
    請確保使用 PowerShell 以管理員身份運行以下命令，根據需求指定參數：
    ```powershell
-   .\CICD.ps1 -websiteName "yourwebsiteName" -publishFolder "yourpublishFolder" -projectPath "yourproject.csproj" -repositoryPath "yourrepositoryPath" -branch "yourbranch" -configuration "Release"
+   .\AutoDeploy-IIS-DotNet.ps1 -websiteName "yourwebsiteName" -publishFolder "yourpublishFolder" -projectPath "yourproject.csproj" -repositoryPath "yourrepositoryPath" -branch "yourbranch" -configuration "Release"
    ```
    - `-websiteName`：設定要部署的 IIS 網站名稱。
    - `-publishFolder`：指定發佈文件夾的路徑。
